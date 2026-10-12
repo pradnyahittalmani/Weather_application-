@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Application</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🌤 Weather Application</h1>
+        <p class="subtitle">Search live weather information by city</p>
+
+        <form method="POST" class="search-box">
+            <input type="text" name="city" placeholder="Enter city name"
+                   value="{{ city }}" required>
+            <button type="submit">Search Weather</button>
+        </form>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        {% if weather %}
+        <div class="weather-card">
+            <h2>{{ weather.city }}, {{ weather.country }}</h2>
+            <p>{{ weather.region }} {% if weather.region %}•{% endif %}
+               {{ weather.local_time }}</p>
+
+            <div class="main-weather">
+                <img src="{{ weather.icon }}" alt="Weather icon">
+                <div>
+                    <div class="temperature">{{ weather.temperature }}°C</div>
+                    <div class="condition">{{ weather.condition }}</div>
+                </div>
+            </div>
+
+            <div class="details">
+                <div>
+                    <span>🌡️ Feels Like</span>
+                    <strong>{{ weather.feels_like }}°C</strong>
+                </div>
+                <div>
+                    <span>💧 Humidity</span>
+                    <strong>{{ weather.humidity }}%</strong>
+                </div>
+                <div>
+                    <span>💨 Wind Speed</span>
+                    <strong>{{ weather.wind_speed }} km/h</strong>
+                </div>
+            </div>
+
+            <div class="condition-box">
+                <h3>Weather Condition</h3>
+                <p>{{ weather.condition }}</p>
+            </div>
+
+            {% if weather.alerts %}
+            <div class="alerts">
+                <h3>⚠️ Weather Alerts</h3>
+                {% for alert in weather.alerts %}
+                <div class="alert">
+                    <strong>{{ alert.headline }}</strong>
+                    {% if alert.event %}<p><b>Event:</b> {{ alert.event }}</p>{% endif %}
+                    {% if alert.severity %}<p><b>Severity:</b> {{ alert.severity }}</p>{% endif %}
+                    <p>{{ alert.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-alert">✓ No weather alerts available for this location.</div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
